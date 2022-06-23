@@ -4,12 +4,27 @@
 
   <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
   <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+  <py-env>
+    - numpy
+    - rdkit
+  </py-env>
+  
 </head>
 <body>
   
  <py-script>print("Test de pyscript !")</py-script>
 
+<py-script>
+  p = Chem.MolFromSmiles('[nH]1cnc2cncnc21')
+  subms = [x for x in ms if x.HasSubstructMatch(p)]
+  for m in subms:
+    _ = AllChem.GenerateDepictionMatching2DStructure(m,p)
+  
+  img=Draw.MolsToGridImage(subms,molsPerRow=4,subImgSize=(200,200),legends=[x.GetProp("_Name") for x in subms])
+</py-script>
 
+  
+  <br />
 
 <p>Placeholder</p>
 
