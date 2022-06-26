@@ -1,28 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-  <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
-  <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
-  <py-env>
-    - numpy
-    - rdkit
-  </py-env>
-  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
 </head>
 <body>
   
- <py-script>print("Test de pyscript !")</py-script>
-
-<py-script>
-  p = Chem.MolFromSmiles('[nH]1cnc2cncnc21')
-  subms = [x for x in ms if x.HasSubstructMatch(p)]
-  for m in subms:
-    _ = AllChem.GenerateDepictionMatching2DStructure(m,p)
+  <br />
   
-  img=Draw.MolsToGridImage(subms,molsPerRow=4,subImgSize=(200,200),legends=[x.GetProp("_Name") for x in subms])
-</py-script>
-
+  <a class="btn btn-info" href="./test.html" role="button">Jeu CB - hétérocycles saturés/insaturés + 1 hétéroatome N/O/S</a>
   
   <br />
 
