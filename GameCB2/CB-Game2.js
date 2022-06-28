@@ -1,9 +1,5 @@
 // ################################ //
 
-document.getElementById("testTable").style.display = "none";
-
-// ################################ //
-
 class molTable {
   constructor(nb, img, nameA, nameB, exact){
     this.nb = nb;
@@ -17,7 +13,7 @@ class molTable {
 // ################################ //
 
 function molTableConstruction(molTableFin) {
-  document.getElementById("testTable").style.display = "flex";
+  document.getElementById("testTable").style.display = "block";
   let color;
   for(elem in molTableFin){
     if(molTableFin[elem].exact == 1){
@@ -189,7 +185,7 @@ function initialisation(){
 
   document.getElementById("goFenetre").style.display = "none";
   document.getElementById("jeuFenetre").style.display = "block";
-
+  document.getElementById("testTable").style.display = "none";
 
   // Mode Questions
   if(modeQuestions == 1){
