@@ -1,5 +1,9 @@
 // ################################ //
 
+document.getElementById("testTable").style.display = "none";
+
+// ################################ //
+
 class molTable {
   constructor(nb, img, nameA, nameB, exact){
     this.nb = nb;
@@ -185,7 +189,7 @@ function initialisation(){
 
   document.getElementById("goFenetre").style.display = "none";
   document.getElementById("jeuFenetre").style.display = "block";
-  document.getElementById("testTable").style.display = "none";
+
 
   // Mode Questions
   if(modeQuestions == 1){
