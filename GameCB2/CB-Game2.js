@@ -141,8 +141,8 @@ function initialisation(){
   
   // Choix 1 = Temps 60 secondes
   if(radioChoix == "radiochoix1"){ 
-    temps = 2;
-    tempsMax = 2;
+    temps = 60;
+    tempsMax = 60;
     timerCB();
     intervalTimer = setInterval(timerCB, 1000);
   }
@@ -185,6 +185,7 @@ function initialisation(){
 
   document.getElementById("goFenetre").style.display = "none";
   document.getElementById("jeuFenetre").style.display = "block";
+  document.getElementById("testTable").style.display = "none";
 
   // Mode Questions
   if(modeQuestions == 1){
