@@ -1,12 +1,30 @@
 // ################################ //
 
-// class molecule {
-//   constructor(image, name1, name2){
-//     this.image = image;
-//     this.name1 = name1;
-//     this.name2 = name2;
-//   }
-// }
+class molTable {
+  constructor(nb, img, nameA, nameB, exact){
+    this.nb = nb;
+    this.img = img;
+    this.nameA = nameA;
+    this.nameB = nameB;
+    this.exact = exact;
+  }
+}
+
+// ################################ //
+
+function molTableConstruction(molTableFin) {
+  document.getElementById("testTable").style.display = "flex";
+  let color;
+  for(elem in molTableFin){
+    if(molTableFin[elem].exact == 1){
+      color = 'class="table-success"';
+    }else{
+      color = 'class="table-danger"';
+    }
+
+    document.getElementById("testTableMol").innerHTML += `<tr ${color}><th scope="row">${molTableFin[elem].nb}</th><td><img src="${molTableFin[elem].img}" width="100px" class="text-center img-fluid" ></td><td>${molTableFin[elem].nameA}</td><td>${molTableFin[elem].nameB}</td></tr>`;
+  }
+}
 
 // ################################ //
 
@@ -80,6 +98,7 @@ let temps = 0;
 let modeQuestions = 0;
 let nbQuestions = 0;
 let nbQuestionsMax = 1000;
+let molTableFin = [];
 const timerElement = document.getElementById("timer");
 
 // ##### //
@@ -94,6 +113,7 @@ function timerCB(){
   if(temps == 0){
     timerElement.innerText = "FINITO PIPO";
     clearInterval(intervalTimer);
+    molTableConstruction(molTableFin);
 
     document.getElementById("affichageScoreFin").textContent = score;
     document.getElementById("affichageErreursFin").textContent = erreurs;
@@ -121,8 +141,8 @@ function initialisation(){
   
   // Choix 1 = Temps 60 secondes
   if(radioChoix == "radiochoix1"){ 
-    temps = 60;
-    tempsMax = 60;
+    temps = 2;
+    tempsMax = 2;
     timerCB();
     intervalTimer = setInterval(timerCB, 1000);
   }
@@ -161,17 +181,17 @@ function initialisation(){
 
   score = 0;
   erreurs = 0;
+  nbQuestions ++; // Question 1
 
   document.getElementById("goFenetre").style.display = "none";
   document.getElementById("jeuFenetre").style.display = "block";
 
-    // Mode Questions
-    if(modeQuestions == 1){
-      nbQuestions ++;
-      let timerBarrePourcentage = Math.round(100*100*(nbQuestions-1)/nbQuestionsMax)/100;
-      document.getElementById("timerBarre").style.width = timerBarrePourcentage + "%";
-      document.getElementById("scoreText").innerText = "Question #" + nbQuestions;
-    }
+  // Mode Questions
+  if(modeQuestions == 1){
+    let timerBarrePourcentage = Math.round(100*100*(nbQuestions-1)/nbQuestionsMax)/100;
+    document.getElementById("timerBarre").style.width = timerBarrePourcentage + "%";
+    document.getElementById("scoreText").innerText = "Question #" + nbQuestions;
+  }
 
   molNb = newMolAleatoire(nombreTotalMol, molNb);
   propalsTest = propositions(nombreTotalMol, molNb);
@@ -193,21 +213,22 @@ function verificationReponse(){
     if(modeQuestions == 0){
       document.getElementById("affichageScore").textContent = score;
     }
-    //console.log("BONNE REPONSE, +1 !")
+    molTableFin.push(new molTable(nbQuestions, "./molpng2/" + dataCB[molNb][0] + ".png", this.textContent, dataCB[molNb][3], 1));
   }else{
     erreurs +=1;
-    //console.log("MAUVAISE REPONSE")
+    molTableFin.push(new molTable(nbQuestions, "./molpng2/" + dataCB[molNb][0] + ".png", this.textContent, dataCB[molNb][3], 0));
   }
 
+  nbQuestions ++; // Question +1
+
   if(modeQuestions == 1){
-    nbQuestions ++;
     let timerBarrePourcentage = Math.round(100*100*(nbQuestions-1)/nbQuestionsMax)/100;
     document.getElementById("timerBarre").style.width = timerBarrePourcentage + "%";
   }
 
   if(nbQuestions > nbQuestionsMax){
-
     clearInterval(intervalTimer);
+    molTableConstruction(molTableFin);
 
     document.getElementById("affichageScoreFin").textContent = score;
     document.getElementById("affichageErreursFin").textContent = erreurs;
@@ -220,6 +241,7 @@ function verificationReponse(){
     setTimeout(function(){document.getElementById("jeuFenetre").style.display = "none";document.getElementById("finFenetre").style.display = "block";document.getElementById("finFenetre").style.opacity = 1;}, 300);
 
   }else{
+    
 
     // Mode Questions
     if(modeQuestions == 1){
