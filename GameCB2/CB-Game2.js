@@ -1,5 +1,17 @@
 // ################################ //
 
+const nombreTotalMol = dataCB.length;
+const tirageMax = 1000;
+let tirageNbs = tirageFunct(nombreTotalMol, tirageMax);
+
+let molNb = null;
+let molNbID = 0;
+
+const audioBon = new Audio("audio/bon.mp3");
+const audioMauvais = new Audio("audio/mauvais.mp3");
+
+// ################################ //
+
 class molTable {
   constructor(nb, img, nameA, nameB, exact){
     this.nb = nb;
@@ -28,30 +40,25 @@ function molTableConstruction(molTableFin) {
 
 // ################################ //
 
-function nombreAleatoire(limite, nbPrecedent){
-  let nbAleatoire = Math.floor(Math.random()*limite);
-  
-  while(nbPrecedent == nbAleatoire){
+function tirageFunct(Nb, maxNb){
+  let tirage = [];
+  let baseArray = [...Array(Nb).keys()];   // Equivalent a range(Nb) en python
 
-    nbAleatoire = Math.floor(Math.random()*limite);
+  while(tirage.length < maxNb){
+    baseArray.sort((a, b) => 0.5 - Math.random());  // Shuffle d'array
+    if(baseArray[0] != tirage[tirage.length - 1]){  // Pour eviter 2 fois le meme chiffre a la suite
+      tirage = tirage.concat(baseArray);
+    }
   }
-  return nbAleatoire
+
+  return tirage.slice(0, maxNb);
 }
-
-// ################################ //
-
-const nombreTotalMol = dataCB.length;
-let molNb = null;
 
 // ##### //
 
-function newMolAleatoire(limite, nbPrecedent){
-  let temp = null;
-  if(nbPrecedent == null){
-    temp = Math.floor(Math.random()*limite);
-  }else{
-    temp = nombreAleatoire(limite, nbPrecedent);
-  }
+function newMolAleatoire(){
+  let temp = tirageNbs[molNbID];
+  molNbID = molNbID + 1;
   return temp;
 }
 
@@ -71,16 +78,15 @@ function parsingTemps(temps){
 function propositions(limite, molNb){
   // Tirage au sort de 4 nombres, 4 propositions
   let listeOutput = [];
-  let temp = null;
+  let temp = [];
 
-  listeOutput.push(molNb);
+  temp = tirageFunct(limite, 3);
 
-  while(listeOutput.length < 4){
-    temp = nombreAleatoire(limite, molNb);
-    if(listeOutput.indexOf(temp) == -1){
-      listeOutput.push(temp);
-    }
+  while(temp.includes(molNb)){
+    temp = tirageFunct(limite, 3);
   }
+  
+  listeOutput = listeOutput.concat(molNb, temp)
   listeOutput = listeOutput.sort((a,b) => 0.5 - Math.random());
 
   let listeOutputNoms = [];
@@ -199,7 +205,7 @@ function initialisation(){
     document.getElementById("scoreText").innerText = "Question #" + nbQuestions;
   }
 
-  molNb = newMolAleatoire(nombreTotalMol, molNb);
+  molNb = newMolAleatoire();
   propalsTest = propositions(nombreTotalMol, molNb);
   document.getElementById("choix1").textContent = propalsTest[0];
   document.getElementById("choix2").textContent = propalsTest[1];
@@ -245,17 +251,40 @@ function sequenceFin() {
 
 // ##### //
 
+function verificationAnim(reponse){
+  if(reponse == "bon"){
+    audioBon.currentTime = 0;
+    audioBon.play();
+    $('#scoreText').css({"background-color":"green","border-color":"darkgreen","transition": "all 0.2s"})
+                   .delay(200)
+                   .queue(function(){$(this).css({"background-color":"transparent","border-color":"transparent","transition": "all 0.2s"})
+                   .stop()});
+  }else{
+    audioMauvais.currentTime = 0;
+    audioMauvais.play();
+    $('#scoreText').css({"background-color":"red","border-color":"firebrick", "transition": "all 0.2s"})
+    .delay(200)
+    .queue(function(){$(this).css({"background-color":"transparent","border-color":"transparent", "transition": "all 0.2s"})
+    .stop()});
+  }
+}
+
+// ##### //
+
 function verificationReponse(){
   // Verification si bonne ou mauvaise reponse :
   
   if(dataCB[molNb][3] == this.textContent) {
     score += 1;
+    verificationAnim("bon");
+    
     if(modeQuestions == 0){
       document.getElementById("affichageScore").textContent = score;
     }
     molTableFin.push(new molTable(nbQuestions, "./molpng2/" + dataCB[molNb][0] + ".png", this.textContent, dataCB[molNb][3], 1));
   }else{
     erreurs +=1;
+    verificationAnim("mauvais");
     molTableFin.push(new molTable(nbQuestions, "./molpng2/" + dataCB[molNb][0] + ".png", this.textContent, dataCB[molNb][3], 0));
   }
 
@@ -278,7 +307,7 @@ function verificationReponse(){
     }
 
     // Nouvelle molecule/question
-    molNb = newMolAleatoire(nombreTotalMol, molNb);
+    molNb = newMolAleatoire();
     propalsTest = propositions(nombreTotalMol, molNb);
     document.getElementById("choix1").textContent = propalsTest[0];
     document.getElementById("choix2").textContent = propalsTest[1];
@@ -396,7 +425,7 @@ function setHighscores(localStorageNom, localStorageScore, localStorageScorePerc
   if(test.length > highscoresMax){
     test.pop();
   }
-  
+
   window.localStorage.setItem(localStorageNom, JSON.stringify(test));
   getHighscores(localStorageNom)
 }
