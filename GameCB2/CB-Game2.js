@@ -32,7 +32,7 @@ function nombreAleatoire(limite, nbPrecedent){
   let nbAleatoire = Math.floor(Math.random()*limite);
   
   while(nbPrecedent == nbAleatoire){
-    //console.log(nbAleatoire)
+
     nbAleatoire = Math.floor(Math.random()*limite);
   }
   return nbAleatoire
@@ -99,6 +99,17 @@ let modeQuestions = 0;
 let nbQuestions = 0;
 let nbQuestionsMax = 1000;
 let molTableFin = [];
+let highscoresType = "";
+let highscoresMax = 10;
+let radioChoix = "";
+let localStorageDict = {"radiochoix1":"highscoresTime1min",
+                        "radiochoix2":"highscoresTime2min",
+                        "radiochoix3":"highscoresNb20",
+                        "radiochoix4":"highscoresNb50"};
+
+// Init
+getHighscores(localStorageDict[radiochoix2])
+
 const timerElement = document.getElementById("timer");
 
 // ##### //
@@ -111,17 +122,9 @@ function timerCB(){
   document.getElementById("timerBarre").style.width = timerBarrePourcentage + "%";
   
   if(temps == 0){
-    timerElement.innerText = "FINITO PIPO";
-    clearInterval(intervalTimer);
-    molTableConstruction(molTableFin);
 
-    document.getElementById("affichageScoreFin").textContent = score;
-    document.getElementById("affichageErreursFin").textContent = erreurs;
-    document.getElementById("affichageBilanFin").textContent = Math.floor(100*(score/(score+erreurs))) + "%";
-    
-    document.getElementById("jeuFenetre").classList.add("fade");
-    setTimeout(function(){document.getElementById("jeuFenetre").style.display = "none";document.getElementById("finFenetre").style.display = "block";document.getElementById("finFenetre").style.opacity = 1;}, 300);
-    
+    sequenceFin();
+
   }
 
   temps --;
@@ -137,8 +140,10 @@ function timerCB_count(){
 // ################################ //
 
 function initialisation(){
-  let radioChoix = document.querySelector('input[name=btnradio]:checked').value;
+  radioChoix = document.querySelector('input[name=btnradio]:checked').value;
   
+  highscoresType = localStorageDict[radioChoix];
+
   // Choix 1 = Temps 60 secondes
   if(radioChoix == "radiochoix1"){ 
     temps = 60;
@@ -174,7 +179,7 @@ function initialisation(){
       
       modeQuestions = 1;
       nbQuestionsMax = 50;
-     
+      
       timerCB_count();
       intervalTimer = setInterval(timerCB_count, 1000);
     }
@@ -203,12 +208,46 @@ function initialisation(){
   document.getElementById("mol_img").src = "./molpng2/" + dataCB[molNb][0] + ".png";
 }
 
+// ##### //
+
+function sequenceFin() {
+  document.getElementById("choix1").disabled = true;
+  document.getElementById("choix2").disabled = true;
+  document.getElementById("choix3").disabled = true;
+  document.getElementById("choix4").disabled = true;
+
+  timerElement.innerText = "-";
+  clearInterval(intervalTimer);
+
+  scorePercent = Math.floor(100*(score/(score+erreurs))) + "%";
+
+  document.getElementById("affichageScoreFin").textContent = score;
+  document.getElementById("affichageErreursFin").textContent = erreurs;
+  document.getElementById("affichageBilanFin").textContent = scorePercent;
+  
+  if(modeQuestions == 1){
+    temps--; // Correction de la seconde en trop
+    document.getElementById("questionsTempsFin").textContent = "Time : " + parsingTemps(temps);
+  }
+
+  setHighscores(highscoresType, score, scorePercent, parsingTemps(temps));
+
+  document.getElementById("jeuFenetre").classList.add("fade");
+
+  setTimeout(function(){
+    document.getElementById("jeuFenetre").style.display = "none";
+    document.getElementById("finFenetre").style.display = "block";
+    document.getElementById("finFenetre").style.opacity = 1;
+    document.getElementById("playAgain").style.display = "block";
+    molTableConstruction(molTableFin);}
+  , 200);
+}
 
 // ##### //
 
 function verificationReponse(){
   // Verification si bonne ou mauvaise reponse :
-
+  
   if(dataCB[molNb][3] == this.textContent) {
     score += 1;
     if(modeQuestions == 0){
@@ -228,22 +267,11 @@ function verificationReponse(){
   }
 
   if(nbQuestions > nbQuestionsMax){
-    clearInterval(intervalTimer);
-    molTableConstruction(molTableFin);
 
-    document.getElementById("affichageScoreFin").textContent = score;
-    document.getElementById("affichageErreursFin").textContent = erreurs;
-    document.getElementById("affichageBilanFin").textContent = Math.floor(100*(score/(score+erreurs))) + "%";
-    
-    temps--; // Correction de la seconde en trop
-    document.getElementById("questionsTempsFin").textContent = "Temps : " + parsingTemps(temps);
-    
-    document.getElementById("jeuFenetre").classList.add("fade");
-    setTimeout(function(){document.getElementById("jeuFenetre").style.display = "none";document.getElementById("finFenetre").style.display = "block";document.getElementById("finFenetre").style.opacity = 1;}, 300);
+    sequenceFin();
 
   }else{
     
-
     // Mode Questions
     if(modeQuestions == 1){
       document.getElementById("scoreText").innerText = "Question #" + nbQuestions;
@@ -281,11 +309,104 @@ document.getElementById("choix4").onclick = verificationReponse;
 
 // ################################ //
 
+function rowStyle(row, index) {
+  if(index == 0){
+    return {classes:"border-dark border-2",
+            css:{"background-color":"#c9b037", "color":"black", "font-weight":"bold"}}
+  }
 
+  if(index == 1){
+    return {classes:"border-dark border-2",
+            css:{"background-color":"#b4b4b4", "color":"black", "font-weight":"bold"}}
+  }
 
+  if(index == 2){
+    return {classes:"border-dark border-2",
+            css:{"background-color":"#ad8a56", "color":"black", "font-weight":"bold"}}
+  }
 
+  return {classes: "table-default bg-white border border-dark border-2"}
+}
 
+// ##### //
 
+function headerStyle(column) {
+  return {classes: "table-dark border-dark border-2"}
+}
+
+// ################################ //
+// ################################ //
+
+// Highscores
+
+function getHighscores(localStorageNom) {
+  let test = JSON.parse(window.localStorage.getItem(localStorageNom));
+
+  if(test == null){
+    document.getElementById("highscores").style.display = "none";
+    document.getElementById("nohighscores").style.display = "inline";
+
+    document.getElementById("nohighscores").textContent = "No highscores";
+  }else{
+    document.getElementById("highscores").style.display = "inline";
+    document.getElementById("nohighscores").style.display = "none";
+
+    $(function () {
+      $('#highscores').bootstrapTable("destroy");
+      $('#highscores').bootstrapTable({data: test});
+      if(localStorageNom.substring(10,12) == "Nb"){
+        $('#highscores').bootstrapTable('showColumn', 'Time');
+      }
+    });
+
+  }
+}
+
+// ##### //
+
+function setHighscores(localStorageNom, localStorageScore, localStorageScorePerc, localStorageTime) {
+  let test = JSON.parse(window.localStorage.getItem(localStorageNom));
+
+  if(test == null){
+    test = [];
+  }
+
+  const date = new Date();
+  let today = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
+
+  test.push({"Score":localStorageScore, "Total":localStorageScorePerc, "Date":today, "Time":localStorageTime})
+  // test.sort((a, b) => b.Score - a.Score)
+
+  test.sort(function(a,b){
+    if (a.Score===b.Score){
+      if (a.Total===b.Total){
+          return (b.Time-a.Time);
+      } else if(a.Total<b.Total){
+          return 1;
+      } else if(a.Total>b.Total){
+          return -1;
+      }
+    } else if(a.Score<b.Score){
+       return 1;
+    } else if(a.Score>b.Score){
+       return -1;
+    }
+  });
+
+  if(test.length > highscoresMax){
+    test.pop();
+  }
+  
+  window.localStorage.setItem(localStorageNom, JSON.stringify(test));
+  getHighscores(localStorageNom)
+}
+
+// ##### //
+
+function getHighscoresRadio(){
+  radioChoix = document.querySelector('input[name=btnradio]:checked').value;
+  getHighscores(localStorageDict[radioChoix]);
+}
 
 // ################################ //
 // ################################ //
