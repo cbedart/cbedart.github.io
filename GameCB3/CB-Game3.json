@@ -1,0 +1,122 @@
+dataCB = [
+    {
+      "ID": "CBAA01",
+      "3-letter": "Ala",
+      "1-letter": "A",
+      "Name": "Alanine"
+    },
+    {
+      "ID": "CBAA02",
+      "3-letter": "Arg",
+      "1-letter": "R",
+      "Name": "Arginine"
+    },
+    {
+      "ID": "CBAA03",
+      "3-letter": "Asn",
+      "1-letter": "N",
+      "Name": "Asparagine"
+    },
+    {
+      "ID": "CBAA04",
+      "3-letter": "Asp",
+      "1-letter": "D",
+      "Name": "Aspartic acid"
+    },
+    {
+      "ID": "CBAA05",
+      "3-letter": "Cys",
+      "1-letter": "C",
+      "Name": "Cysteine"
+    },
+    {
+      "ID": "CBAA06",
+      "3-letter": "Gln",
+      "1-letter": "Q",
+      "Name": "Glutamine"
+    },
+    {
+      "ID": "CBAA07",
+      "3-letter": "Glu",
+      "1-letter": "E",
+      "Name": "Glutamic acid"
+    },
+    {
+      "ID": "CBAA08",
+      "3-letter": "Gly",
+      "1-letter": "G",
+      "Name": "Glycine"
+    },
+    {
+      "ID": "CBAA09",
+      "3-letter": "His",
+      "1-letter": "H",
+      "Name": "Histidine"
+    },
+    {
+      "ID": "CBAA10",
+      "3-letter": "Ile",
+      "1-letter": "I",
+      "Name": "Isoleucine"
+    },
+    {
+      "ID": "CBAA11",
+      "3-letter": "Leu",
+      "1-letter": "L",
+      "Name": "Leucine"
+    },
+    {
+      "ID": "CBAA12",
+      "3-letter": "Lys",
+      "1-letter": "K",
+      "Name": "Lysine"
+    },
+    {
+      "ID": "CBAA13",
+      "3-letter": "Met",
+      "1-letter": "M",
+      "Name": "Methionine"
+    },
+    {
+      "ID": "CBAA14",
+      "3-letter": "Phe",
+      "1-letter": "F",
+      "Name": "Phenylalanine"
+    },
+    {
+      "ID": "CBAA15",
+      "3-letter": "Pro",
+      "1-letter": "P",
+      "Name": "Proline"
+    },
+    {
+      "ID": "CBAA16",
+      "3-letter": "Ser",
+      "1-letter": "S",
+      "Name": "Serine"
+    },
+    {
+      "ID": "CBAA17",
+      "3-letter": "Thr",
+      "1-letter": "T",
+      "Name": "Threonine"
+    },
+    {
+      "ID": "CBAA18",
+      "3-letter": "Trp",
+      "1-letter": "W",
+      "Name": "Tryptophan"
+    },
+    {
+      "ID": "CBAA19",
+      "3-letter": "Tyr",
+      "1-letter": "Y",
+      "Name": "Tyrosine"
+    },
+    {
+      "ID": "CBAA20",
+      "3-letter": "Val",
+      "1-letter": "V",
+      "Name": "Valine"
+    }
+   ]
