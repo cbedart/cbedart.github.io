@@ -10,6 +10,8 @@ let molNbID = 0;
 const audioBon = new Audio("audio/bon.mp3");
 const audioMauvais = new Audio("audio/mauvais.mp3");
 
+let gameType = "Name";
+
 // ################################ //
 
 class molTable {
@@ -91,7 +93,7 @@ function propositions(limite, molNb){
 
   let listeOutputNoms = [];
   for(i in listeOutput){
-    listeOutputNoms.push(dataCB[listeOutput[i]]["Name"]);
+    listeOutputNoms.push(dataCB[listeOutput[i]][gameType]);
   }
 
   return listeOutputNoms;
@@ -108,10 +110,10 @@ let molTableFin = [];
 let highscoresType = "";
 let highscoresMax = 10;
 let radioChoix = "";
-let localStorageDict = {"radiochoix1":"highscoresTime1min",
-                        "radiochoix2":"highscoresTime2min",
-                        "radiochoix3":"highscoresNb20",
-                        "radiochoix4":"highscoresNb50"};
+let localStorageDict = {"radiochoix1":"highscoresTime1min_AA",
+                        "radiochoix2":"highscoresTime2min_AA",
+                        "radiochoix3":"highscoresNb20_AA",
+                        "radiochoix4":"highscoresNb50_AA"};
 
 // Init
 getHighscores(localStorageDict[radiochoix2])
@@ -147,8 +149,9 @@ function timerCB_count(){
 
 function initialisation(){
   radioChoix = document.querySelector('input[name=btnradio]:checked').value;
-  
   highscoresType = localStorageDict[radioChoix];
+
+  gameType = document.querySelector('input[name=gametype]:checked').value;
 
   // Choix 1 = Temps 60 secondes
   if(radioChoix == "radiochoix1"){ 
@@ -236,7 +239,7 @@ function sequenceFin() {
     document.getElementById("questionsTempsFin").textContent = "Time : " + parsingTemps(temps);
   }
 
-  setHighscores(highscoresType, score, scorePercent, parsingTemps(temps));
+  setHighscores(highscoresType, score, scorePercent, parsingTemps(temps), gameType);
 
   document.getElementById("jeuFenetre").classList.add("fade");
 
@@ -274,18 +277,18 @@ function verificationAnim(reponse){
 function verificationReponse(){
   // Verification si bonne ou mauvaise reponse :
   
-  if(dataCB[molNb]["Name"] == this.textContent) {
+  if(dataCB[molNb][gameType] == this.textContent) {
     score += 1;
     verificationAnim("bon");
     
     if(modeQuestions == 0){
       document.getElementById("affichageScore").textContent = score;
     }
-    molTableFin.push(new molTable(nbQuestions, "./pictures/" + dataCB[molNb]["ID"] + ".png", this.textContent, dataCB[molNb]["Name"], 1));
+    molTableFin.push(new molTable(nbQuestions, "./pictures/" + dataCB[molNb]["ID"] + ".png", this.textContent, dataCB[molNb][gameType], 1));
   }else{
     erreurs +=1;
     verificationAnim("mauvais");
-    molTableFin.push(new molTable(nbQuestions, "./pictures/" + dataCB[molNb]["ID"] + ".png", this.textContent, dataCB[molNb]["Name"], 0));
+    molTableFin.push(new molTable(nbQuestions, "./pictures/" + dataCB[molNb]["ID"] + ".png", this.textContent, dataCB[molNb][gameType], 0));
   }
 
   nbQuestions ++; // Question +1
@@ -393,7 +396,7 @@ function getHighscores(localStorageNom) {
 
 // ##### //
 
-function setHighscores(localStorageNom, localStorageScore, localStorageScorePerc, localStorageTime) {
+function setHighscores(localStorageNom, localStorageScore, localStorageScorePerc, localStorageTime, localStorageType) {
   let test = JSON.parse(window.localStorage.getItem(localStorageNom));
 
   if(test == null){
@@ -403,7 +406,7 @@ function setHighscores(localStorageNom, localStorageScore, localStorageScorePerc
   const date = new Date();
   let today = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear();
 
-  test.push({"Score":localStorageScore, "Total":localStorageScorePerc, "Date":today, "Time":localStorageTime})
+  test.push({"Score":localStorageScore, "Total":localStorageScorePerc, "Date":today, "Time":localStorageTime, "Type":localStorageType})
   // test.sort((a, b) => b.Score - a.Score)
 
   test.sort(function(a,b){

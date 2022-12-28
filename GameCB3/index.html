@@ -71,10 +71,19 @@
 
           <input type="radio" class="btn-check" name="btnradio" id="radiochoix4" value="radiochoix4" autocomplete="off" onchange="getHighscoresRadio()">
           <label class="btn btn-outline-dark" for="radiochoix4"><b>Number</b><br />50</label>
-          
         </div>
         <br /><p></p><br />
+        <div class="btn-group" role="group">
+          <input class="btn-check" type="radio" name="gametype" id="Name" value="Name" checked="">
+          <label class="btn btn-outline-dark" for="Name">Full names</label>
+          
+          <input class="btn-check" type="radio" name="gametype" id="1-letter" value="1-letter">
+          <label class="btn btn-outline-dark" for="1-letter">1-letter symbols</label>
 
+          <input class="btn-check" type="radio" name="gametype" id="3-letter" value="3-letter">
+          <label class="btn btn-outline-dark" for="3-letter">3-letter symbols</label>
+        </div>
+        <br /><p></p><br />
         <div class="row w-50 mx-auto" id="goBouton">
           <button id="go" class="btn btn-lg btn-dark" type="button">GO</button>
         </div>
@@ -90,11 +99,11 @@
             <th data-field="Score">Score</th>
             <th data-field="Total">%Total</th>
             <th data-field="Time" data-visible="false">Time</th>
+            <th data-field="Type">Type</th>
             <th data-field="Date">Date</th>
         </tr>
         </thead>
       </table>
-      
     </div>
 
     <div class="row bg-white border border-dark border-3 rounded-3" id="finFenetre" style="width:300px;margin-left: auto;margin-right: auto;display:none;">
