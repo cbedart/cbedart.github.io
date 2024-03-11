@@ -100,8 +100,6 @@
             'Caractères spéciaux': 0,
             'Chiffres': 0
         		};
-        
-						console.log(password);
             
             for (let char of password) {
                 if (/[0-9]/.test(char)) {
@@ -132,31 +130,39 @@
             let time_ = "heures";
             let cracked = Math.pow(entropy, passLen) / crackSpeed / 3600; // Hours in seconds
             
-						console.log(cracked);
-            
-            console.log(cracked*3600);
-          	if (cracked*3600 < 3600) {
-                cracked /= 60;
+            if (cracked*3600*1000*1000 < 1000) {
+                cracked *= 3600000000;
+                time_ = "nanosecondes";
+            }
+            else if (cracked*3600*1000 < 1000) {
+                cracked *= 3600000;
+                time_ = "millisecondes";
+            }
+           
+          	else if (cracked*3600 < 60) {
+                cracked *= 3600;
                 time_ = "secondes";
             }
             
-            if (cracked*60 < 60) {
-                cracked /= 60;
+            else if (cracked*60 < 60) {
+                cracked *= 60;
                 time_ = "minutes";
             }
             
-            if (cracked > 24) {
+            else if (cracked < 24) {
                 cracked /= 24;
                 time_ = "jours";
             }
-            if (cracked > 365) {
+            else if (cracked > 365) {
                 cracked /= 365;
                 time_ = "années";
             }
+            
             if (time_ === "années" && cracked > 100) {
                 cracked /= 100;
                 time_ = "siècles";
             }
+            
             if (time_ === "siècles" && cracked > 1000) {
                 cracked /= 1000;
                 time_ = "millénaires";
@@ -169,6 +175,3 @@
     </script>
 </body>
 </html>
-
-
-
