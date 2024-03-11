@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évaluation de la force d'un mot de passe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f5f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            
+        }
+        
+        h2 {
+            color: #007bff;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+            display: block;
+        }
+        
+        input[type="password"] {
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px; /* Adjust margin-top to create space between input and button */
+
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .center {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Évaluation basique de la force d'un mot de passe</h2>
+        <p id="crackSpeed">Basé sur le craquage de mots de passe à : 20 000 MH/s.</p>
+        <p style="color: red; font-weight: bold;"><span style="color: red;">⚠️</span> Ne pas insérer vos vrais mots de passe <span style="color: red;">⚠️</span></p>
+        <label for="password">Entrer un mot de passe:</label>
+        <input type="password" id="password">
+        <div class="center">
+        <button onclick="evaluatePassword()">Évaluer le mot de passe</button>
+        </div>
+        <div id="output"></div>
+    </div>
+    
+    <script>
+        const crackSpeed = 20000000000; // Default cracking speed
+
+        const entropies = {
+            'Caractères en majuscules': 26,
+            'Caractères en minuscules': 26,
+            'Caractères spéciaux': 33,
+            'Chiffres': 10
+        };
+
+        function evaluatePassword() {
+            const password = document.getElementById("password").value;
+            const passLen = password.length;
+            let entropy = 0;
+            
+          	let policies = {
+            'Caractères en majuscules': 0,
+            'Caractères en minuscules': 0,
+            'Caractères spéciaux': 0,
+            'Chiffres': 0
+        		};
+        
+						console.log(password);
+            
+            for (let char of password) {
+                if (/[0-9]/.test(char)) {
+                    policies["Chiffres"] += 1;
+                } else if (/[a-z]/.test(char)) {
+                    policies["Caractères en minuscules"] += 1;
+                } else if (/[A-Z]/.test(char)) {
+                    policies["Caractères en majuscules"] += 1;
+                } else {
+                    policies["Caractères spéciaux"] += 1;
+                }
+            }
+
+            let output = "";
+            output += `<p>Longueur: ${passLen}</p>`;
+            
+            for (let policy in policies) {
+                const num = policies[policy] > 0 ? policies[policy] : '-';
+                output += `<p>${policy}: ${num}</p>`;
+                if (policies[policy] > 0) {
+                    entropy += entropies[policy];
+                }
+            }
+
+            output += `<p>Entropie du mot de passe: ${entropy}</p>`;
+
+            // Calculate the time to crack
+            let time_ = "heures";
+            let cracked = Math.pow(entropy, passLen) / crackSpeed / 3600; // Hours in seconds
+            
+						console.log(cracked);
+            
+            console.log(cracked*3600);
+          	if (cracked*3600 < 3600) {
+                cracked /= 60;
+                time_ = "secondes";
+            }
+            
+            if (cracked*60 < 60) {
+                cracked /= 60;
+                time_ = "minutes";
+            }
+            
+            if (cracked > 24) {
+                cracked /= 24;
+                time_ = "jours";
+            }
+            if (cracked > 365) {
+                cracked /= 365;
+                time_ = "années";
+            }
+            if (time_ === "années" && cracked > 100) {
+                cracked /= 100;
+                time_ = "siècles";
+            }
+            if (time_ === "siècles" && cracked > 1000) {
+                cracked /= 1000;
+                time_ = "millénaires";
+            }
+
+            output += `<p>Temps nécessaire pour craquer le mot de passe: ${cracked.toFixed(2)} ${time_}</p>`;
+
+            document.getElementById("output").innerHTML = output;
+        }
+    </script>
+</body>
+</html>
+
+
+
